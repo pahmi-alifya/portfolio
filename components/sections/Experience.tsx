@@ -169,7 +169,7 @@ export function Experience() {
     >
       {/* Glow */}
       <div
-        className="absolute left-0 top-1/2 -translate-y-1/2 w-[400px] h-[400px] pointer-events-none"
+        className="absolute left-0 top-1/2 -translate-y-1/2 w-100 h-100 pointer-events-none"
         style={{ background: 'radial-gradient(ellipse at left, var(--primary-glow) 0%, transparent 70%)' }}
       />
 
