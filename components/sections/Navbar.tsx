@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useTheme } from 'next-themes'
+import Link from 'next/link'
 import { Moon, Sun, Menu, X, Code2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -107,6 +108,14 @@ export function Navbar() {
                 </a>
               </li>
             ))}
+            <li>
+              <Link
+                href="/works"
+                className="text-sm font-medium transition-all duration-200 text-[var(--text-muted)] hover:text-[var(--text)]"
+              >
+                Works
+              </Link>
+            </li>
           </ul>
 
           {/* Right side */}
@@ -175,6 +184,16 @@ export function Navbar() {
                 </a>
               </li>
             ))}
+            <li>
+              <Link
+                href="/works"
+                onClick={() => setMobileOpen(false)}
+                className="text-2xl font-semibold transition-colors"
+                style={{ fontFamily: 'var(--font-space-grotesk)', color: 'var(--text)' }}
+              >
+                Works
+              </Link>
+            </li>
             <li>
               <a
                 href="#contact"
