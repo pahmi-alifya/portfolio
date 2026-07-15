@@ -16,9 +16,9 @@ export const works: WorkProject[] = [
     url: 'http://media-menulis.vercel.app/',
   },
   {
-    title: 'Salary Calculation',
+    title: 'Salary Exchange Calculation',
     description: 'Web tool for calculating salary, deductions, and take-home pay.',
-    url: 'https://salary-calculation-me.vercel.app/',
+    url: 'https://my-salary-exchange.vercel.app/',
   },
   {
     title: 'Rami Games',
