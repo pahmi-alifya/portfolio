@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono, Space_Grotesk } from 'next/font/google'
+import { Analytics } from '@vercel/analytics/next'
 import { ThemeProvider } from '@/components/providers/ThemeProvider'
 import './globals.css'
 
@@ -38,6 +39,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     >
       <body className="antialiased min-h-screen overflow-x-hidden">
         <ThemeProvider>{children}</ThemeProvider>
+        <Analytics />
       </body>
     </html>
   )
