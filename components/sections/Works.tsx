@@ -121,13 +121,13 @@ export function Works() {
             transition: 'opacity 0.6s ease, transform 0.6s ease',
           }}
         >
-          <div className="section-badge mx-auto inline-flex">Past Work</div>
+          <div className="section-badge mx-auto inline-flex">Side Projects</div>
           <h1 className="section-title" style={{ fontFamily: 'var(--font-space-grotesk)' }}>
             Web Projects{' '}
             <span className="gradient-text">Showcase</span>
           </h1>
           <p className="mt-3 max-w-xl mx-auto text-base" style={{ color: 'var(--text-muted)' }}>
-            A selection of web applications previously built and shipped.
+            A selection of personal side projects built for fun and self-learning, not affiliated with any employer or client work.
           </p>
         </div>
 
