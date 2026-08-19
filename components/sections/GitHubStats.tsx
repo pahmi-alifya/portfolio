@@ -1,23 +1,10 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
 import { useGitHub } from '@/hooks/useGitHub'
+import { useInView } from '@/hooks/useInView'
 import { AnimatedCounter } from '@/components/ui/AnimatedCounter'
 import { Star, GitFork, Users, BookOpen, ExternalLink } from 'lucide-react'
 import { RadarChart, PolarGrid, PolarAngleAxis, Radar, ResponsiveContainer, Tooltip } from 'recharts'
-
-function useInView(threshold = 0.15) {
-  const ref = useRef<HTMLDivElement>(null)
-  const [visible, setVisible] = useState(false)
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setVisible(true) }, { threshold })
-    obs.observe(el)
-    return () => obs.disconnect()
-  }, [threshold])
-  return { ref, visible }
-}
 
 const LANG_COLORS: Record<string, string> = {
   TypeScript: '#3B82F6',
@@ -36,7 +23,7 @@ function getLangColor(lang: string) {
 
 export function GitHubStats() {
   const { data, isLoading } = useGitHub()
-  const { ref, visible } = useInView()
+  const { ref, visible } = useInView(0.15)
 
   const statCards = data
     ? [

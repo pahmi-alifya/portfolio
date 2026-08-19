@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import {
   SiReact,
   SiNextdotjs,
@@ -20,6 +20,7 @@ import {
 import { Globe, ShieldCheck, Languages, Server } from 'lucide-react'
 import { skillCategories } from '@/data/skills'
 import { getTechColor } from '@/lib/techColors'
+import { useInView } from '@/hooks/useInView'
 
 type IconComponent = React.ElementType
 
@@ -43,19 +44,6 @@ const SKILL_ICONS: Record<string, IconComponent> = {
   'i18n': Languages,
   'Module Federation': SiWebpack,
   'SSO': ShieldCheck,
-}
-
-function useInView(threshold = 0.15) {
-  const ref = useRef<HTMLDivElement>(null)
-  const [visible, setVisible] = useState(false)
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setVisible(true) }, { threshold })
-    obs.observe(el)
-    return () => obs.disconnect()
-  }, [threshold])
-  return { ref, visible }
 }
 
 function SkillCard({ name, index, visible }: { name: string; index: number; visible: boolean }) {
@@ -99,7 +87,7 @@ function SkillCard({ name, index, visible }: { name: string; index: number; visi
 }
 
 export function Skills() {
-  const { ref, visible } = useInView()
+  const { ref, visible } = useInView(0.15)
 
   return (
     <section id="skills" ref={ref} className="section-padding" style={{ background: 'var(--bg)' }}>

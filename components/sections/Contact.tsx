@@ -1,26 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { Mail, Send, MapPin, Phone } from "lucide-react";
 import { LinkedinIcon, GithubIcon } from "@/components/ui/SocialIcons";
-
-function useInView(threshold = 0.15) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([e]) => {
-        if (e.isIntersecting) setVisible(true);
-      },
-      { threshold },
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, [threshold]);
-  return { ref, visible };
-}
+import { useInView } from "@/hooks/useInView";
+import { TiltCard } from "@/components/ui/TiltCard";
 
 const contactLinks = [
   {
@@ -32,25 +16,41 @@ const contactLinks = [
     glow: "var(--primary-glow)",
   },
   {
+    icon: Phone,
+    label: "WhatsApp",
+    value: "+62 858-1397-3559",
+    href: "https://wa.me/628581397359",
+    color: "var(--accent)",
+    glow: "var(--accent-glow)",
+  },
+  {
     icon: GithubIcon,
     label: "GitHub",
     value: "github.com/pahmi-alifya",
     href: "https://github.com/pahmi-alifya",
-    color: "var(--accent)",
-    glow: "var(--accent-glow)",
+    color: "var(--purple)",
+    glow: "var(--purple-glow)",
   },
   {
     icon: LinkedinIcon,
     label: "LinkedIn",
     value: "pahmi-alifya-bahri",
     href: "https://www.linkedin.com/in/pahmi-alifya-bahri-479a0919a/",
-    color: "var(--purple)",
-    glow: "var(--purple-glow)",
+    color: "var(--primary)",
+    glow: "var(--primary-glow)",
+  },
+  {
+    icon: MapPin,
+    label: "Location",
+    value: "Bogor, West Java, Indonesia",
+    href: undefined,
+    color: "var(--accent)",
+    glow: "var(--accent-glow)",
   },
 ];
 
 export function Contact() {
-  const { ref, visible } = useInView();
+  const { ref, visible } = useInView(0.15);
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">(
     "idle",
@@ -108,18 +108,11 @@ export function Contact() {
             }}
           >
             <div className="space-y-4">
-              {contactLinks.map(
-                ({ icon: Icon, label, value, href, color, glow }) => (
-                  <a
-                    key={href}
-                    href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-4 p-4 rounded-xl transition-all duration-300 group glow-border"
-                    style={{ background: "var(--bg-card)" }}
-                  >
+              {contactLinks.map(({ icon: Icon, label, value, href, color, glow }) => {
+                const inner = (
+                  <>
                     <div
-                      className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:scale-110"
+                      className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-all duration-300 group-hover:scale-110"
                       style={{ background: glow, border: `1px solid ${color}` }}
                     >
                       <Icon size={20} style={{ color }} />
@@ -138,33 +131,36 @@ export function Contact() {
                         {value}
                       </div>
                     </div>
-                  </a>
-                ),
-              )}
-            </div>
+                  </>
+                );
 
-            {/* Location + Phone */}
-            <div className="card-surface p-4 space-y-3">
-              <div
-                className="flex items-center gap-3 text-sm"
-                style={{ color: "var(--text-muted)" }}
-              >
-                <MapPin
-                  size={16}
-                  style={{ color: "var(--primary)", flexShrink: 0 }}
-                />
-                Bogor, West Java, Indonesia
-              </div>
-              <div
-                className="flex items-center gap-3 text-sm"
-                style={{ color: "var(--text-muted)" }}
-              >
-                <Phone
-                  size={16}
-                  style={{ color: "var(--primary)", flexShrink: 0 }}
-                />
-                +62 858-1397-3559
-              </div>
+                if (!href) {
+                  return (
+                    <TiltCard key={label} maxTilt={8} radius="12px">
+                      <div
+                        className="flex items-center gap-4 p-4 rounded-xl group glow-border"
+                        style={{ background: "var(--bg-card)" }}
+                      >
+                        {inner}
+                      </div>
+                    </TiltCard>
+                  );
+                }
+
+                return (
+                  <TiltCard key={label} maxTilt={8} radius="12px">
+                    <a
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-4 p-4 rounded-xl transition-all duration-300 group glow-border"
+                      style={{ background: "var(--bg-card)" }}
+                    >
+                      {inner}
+                    </a>
+                  </TiltCard>
+                );
+              })}
             </div>
           </div>
 

@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Download, Briefcase, Code2, Building2 } from "lucide-react";
 import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
+import { useInView } from "@/hooks/useInView";
 
 const stats = [
   { icon: Briefcase, label: "Years Experience", value: 5, suffix: "+" },
@@ -11,26 +11,8 @@ const stats = [
   { icon: Code2, label: "Projects Built", value: 15, suffix: "+" },
 ];
 
-function useInView(threshold = 0.2) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([e]) => {
-        if (e.isIntersecting) setVisible(true);
-      },
-      { threshold },
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, [threshold]);
-  return { ref, visible };
-}
-
 export function About() {
-  const { ref, visible } = useInView();
+  const { ref, visible } = useInView(0.2);
 
   return (
     <section

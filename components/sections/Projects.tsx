@@ -1,178 +1,300 @@
-'use client'
+"use client";
 
-import { useEffect, useRef, useState } from 'react'
-import { useGitHub } from '@/hooks/useGitHub'
-import { Star, GitFork, ExternalLink, Code2 } from 'lucide-react'
-import { GithubIcon } from '@/components/ui/SocialIcons'
+import { useGitHub } from "@/hooks/useGitHub";
+import { useInView } from "@/hooks/useInView";
+import { GithubIcon } from "@/components/ui/SocialIcons";
+import { TiltCard } from "@/components/ui/TiltCard";
+import {
+  CONTRIBUTION_CELL_GAP,
+  CONTRIBUTION_CELL_SIZE,
+  CONTRIBUTION_WEEKDAY_LABELS,
+} from "@/constants/contributions";
+import {
+  buildContributionWeeks,
+  computeContributionMonthLabels,
+  computeContributionStreaks,
+  formatContributionDate,
+  levelColor,
+} from "@/lib/contributions";
 
-function useInView(threshold = 0.1) {
-  const ref = useRef<HTMLDivElement>(null)
-  const [visible, setVisible] = useState(false)
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setVisible(true) }, { threshold })
-    obs.observe(el)
-    return () => obs.disconnect()
-  }, [threshold])
-  return { ref, visible }
+function ContributionStat({
+  value,
+  range,
+  caption,
+}: {
+  value: string;
+  range: string;
+  caption: string;
+}) {
+  return (
+    <div className="text-center px-2">
+      <p
+        className="text-xl sm:text-2xl font-bold"
+        style={{
+          fontFamily: "var(--font-space-grotesk)",
+          color: "var(--text)",
+        }}
+      >
+        {value}
+      </p>
+      <p className="text-xs mt-1" style={{ color: "var(--text-faint)" }}>
+        {range}
+      </p>
+      <p
+        className="text-xs font-semibold mt-2 uppercase tracking-wider"
+        style={{ color: "var(--text-muted)" }}
+      >
+        {caption}
+      </p>
+    </div>
+  );
 }
 
-const LANG_COLORS: Record<string, string> = {
-  TypeScript: '#3B82F6',
-  JavaScript: '#FBBF24',
-  Python: '#34D399',
-  Dart: '#22D3EE',
-  CSS: '#A78BFA',
-  HTML: '#FB7185',
-  Swift: '#F97316',
-  Kotlin: '#C084FC',
-}
-function getLangColor(lang: string) {
-  return LANG_COLORS[lang] ?? '#818CF8'
-}
-
-function timeAgo(dateStr: string) {
-  const diff = Date.now() - new Date(dateStr).getTime()
-  const days = Math.floor(diff / 86400000)
-  if (days < 1) return 'today'
-  if (days < 30) return `${days}d ago`
-  const months = Math.floor(days / 30)
-  if (months < 12) return `${months}mo ago`
-  return `${Math.floor(months / 12)}y ago`
+function streakRange(
+  { start, end }: { start: string | null; end: string | null },
+  fallback: string,
+) {
+  return start && end
+    ? `${formatContributionDate(start)} – ${formatContributionDate(end)}`
+    : fallback;
 }
 
 export function Projects() {
-  const { data, isLoading } = useGitHub()
-  const { ref, visible } = useInView()
+  const { data, isLoading } = useGitHub();
+  const { ref, visible } = useInView();
+
+  const days = data?.contributions.days ?? [];
+  const total = data?.contributions.total ?? 0;
+  const weeks = buildContributionWeeks(days);
+  const monthLabels = computeContributionMonthLabels(weeks);
+  const { longest, current } = computeContributionStreaks(days);
 
   return (
-    <section id="projects" ref={ref} className="section-padding" style={{ background: 'var(--bg)' }}>
+    <section
+      id="contributions"
+      ref={ref}
+      className="section-padding"
+      style={{ background: "var(--bg)" }}
+    >
       <div
         className="absolute inset-0 pointer-events-none"
-        style={{ background: 'radial-gradient(ellipse 50% 40% at 50% 50%, var(--purple-glow) 0%, transparent 70%)' }}
+        style={{
+          background:
+            "radial-gradient(ellipse 50% 40% at 50% 50%, var(--purple-glow) 0%, transparent 70%)",
+        }}
       />
 
-      <div className="max-w-7xl mx-auto relative z-10">
+      <div className="max-w-4xl mx-auto relative z-10">
         {/* Header */}
         <div
           className="text-center mb-12"
           style={{
             opacity: visible ? 1 : 0,
-            transform: visible ? 'translateY(0)' : 'translateY(20px)',
-            transition: 'opacity 0.6s ease, transform 0.6s ease',
+            transform: visible ? "translateY(0)" : "translateY(20px)",
+            transition: "opacity 0.6s ease, transform 0.6s ease",
           }}
         >
-          <div className="section-badge mx-auto inline-flex">Open Source</div>
-          <h2 className="section-title" style={{ fontFamily: 'var(--font-space-grotesk)' }}>
-            Featured{' '}
-            <span className="gradient-text">Projects</span>
+          <div className="section-badge mx-auto inline-flex">Activity</div>
+          <h2
+            className="section-title"
+            style={{ fontFamily: "var(--font-space-grotesk)" }}
+          >
+            GitHub <span className="gradient-text">Contributions</span>
           </h2>
-          <p className="mt-3 max-w-xl mx-auto text-base" style={{ color: 'var(--text-muted)' }}>
-            Top repositories from GitHub, sorted by latest activity.
+          <p
+            className="mt-3 max-w-xl mx-auto text-base"
+            style={{ color: "var(--text-muted)" }}
+          >
+            My contribution activity over the last year — hover a day to see
+            details.
           </p>
         </div>
 
-        {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div
-                key={i}
-                className="card-surface p-5 h-44"
-                style={{ animation: 'glow-pulse 1.5s ease infinite', animationDelay: `${i * 200}ms` }}
-              />
-            ))}
-          </div>
-        ) : !data?.topRepos.length ? (
-          <div className="text-center py-16" style={{ color: 'var(--text-muted)' }}>
-            <Code2 size={48} className="mx-auto mb-4 opacity-30" />
-            <p>No public repositories found.</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {data.topRepos.map((repo, i) => (
-              <div
-                key={repo.id}
-                className="card-surface p-5 flex flex-col gap-3 group"
-                style={{
-                  opacity: visible ? 1 : 0,
-                  transform: visible ? 'translateY(0)' : 'translateY(30px)',
-                  transition: `opacity 0.5s ease ${i * 80}ms, transform 0.5s ease ${i * 80}ms`,
-                }}
-              >
-                {/* Top */}
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex items-center gap-2 min-w-0">
-                    <GithubIcon size={16} />
-                    <span
-                      className="font-semibold text-sm truncate"
-                      style={{ color: 'var(--text)', fontFamily: 'var(--font-space-grotesk)' }}
-                    >
-                      {repo.name}
-                    </span>
-                  </div>
-                  <a
-                    href={repo.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="shrink-0 w-7 h-7 rounded-lg flex items-center justify-center transition-all duration-200 opacity-0 group-hover:opacity-100 hover:scale-110"
-                    style={{ background: 'var(--primary-glow)', color: 'var(--primary)' }}
-                    aria-label={`Open ${repo.name}`}
-                  >
-                    <ExternalLink size={13} />
-                  </a>
-                </div>
-
-                {/* Description */}
+        <div
+          style={{
+            opacity: visible ? 1 : 0,
+            transform: visible ? "translateY(0)" : "translateY(20px)",
+            transition: "opacity 0.6s ease 0.1s, transform 0.6s ease 0.1s",
+          }}
+        >
+          <TiltCard maxTilt={4} radius="12px">
+            <div className="card-surface p-6 w-max justify-self-center">
+              {isLoading ? (
+                <div
+                  className="h-48"
+                  style={{ animation: "glow-pulse 1.5s ease infinite" }}
+                />
+              ) : !days.length ? (
                 <p
-                  className="text-xs leading-relaxed flex-1 line-clamp-2"
-                  style={{ color: 'var(--text-muted)' }}
+                  className="text-center py-10 text-sm"
+                  style={{ color: "var(--text-muted)" }}
                 >
-                  {repo.description || 'No description provided.'}
+                  No contribution activity found.
                 </p>
+              ) : (
+                <>
+                  <div className="pb-1">
+                    <p
+                      className="text-sm font-medium mb-4"
+                      style={{ color: "var(--text)" }}
+                    >
+                      {total.toLocaleString()} contributions in the last year
+                    </p>
 
-                {/* Topics */}
-                {repo.topics.length > 0 && (
-                  <div className="flex flex-wrap gap-1">
-                    {repo.topics.slice(0, 3).map((t) => (
-                      <span
-                        key={t}
-                        className="text-[10px] px-2 py-0.5 rounded-full"
-                        style={{ background: 'var(--primary-glow)', color: 'var(--primary)', border: '1px solid var(--primary-glow)' }}
+                    <div className="inline-flex gap-2">
+                      {/* Weekday labels */}
+                      <div
+                        className="flex flex-col shrink-0"
+                        style={{ gap: CONTRIBUTION_CELL_GAP, marginTop: 16 }}
                       >
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-                )}
+                        {CONTRIBUTION_WEEKDAY_LABELS.map((label, i) => (
+                          <span
+                            key={i}
+                            className="text-[12px] leading-none"
+                            style={{
+                              height: CONTRIBUTION_CELL_SIZE,
+                              color: "var(--text-faint)",
+                            }}
+                          >
+                            {label}
+                          </span>
+                        ))}
+                      </div>
 
-                {/* Footer */}
-                <div className="flex items-center justify-between text-xs pt-2 border-t" style={{ borderColor: 'var(--border)', color: 'var(--text-faint)' }}>
-                  <div className="flex items-center gap-3">
-                    {repo.language && (
-                      <span className="flex items-center gap-1">
-                        <span
-                          className="w-2 h-2 rounded-full"
-                          style={{ background: getLangColor(repo.language) }}
-                        />
-                        {repo.language}
-                      </span>
-                    )}
-                    <span className="flex items-center gap-1">
-                      <Star size={11} />
-                      {repo.stars}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <GitFork size={11} />
-                      {repo.forks}
-                    </span>
+                      <div>
+                        {/* Month labels */}
+                        <div
+                          className="flex"
+                          style={{ gap: CONTRIBUTION_CELL_GAP, height: 14 }}
+                        >
+                          {monthLabels.map((label, i) => (
+                            <span
+                              key={i}
+                              className="text-[12px] leading-none"
+                              style={{
+                                width: CONTRIBUTION_CELL_SIZE,
+                                color: "var(--text-faint)",
+                              }}
+                            >
+                              {label}
+                            </span>
+                          ))}
+                        </div>
+
+                        {/* Grid */}
+                        <div
+                          className="flex"
+                          style={{ gap: CONTRIBUTION_CELL_GAP }}
+                        >
+                          {weeks.map((week, wi) => (
+                            <div
+                              key={wi}
+                              className="flex flex-col"
+                              style={{ gap: CONTRIBUTION_CELL_GAP }}
+                            >
+                              {week.map((day, di) => (
+                                <div
+                                  key={di}
+                                  className="group relative"
+                                  style={{
+                                    width: CONTRIBUTION_CELL_SIZE,
+                                    height: CONTRIBUTION_CELL_SIZE,
+                                  }}
+                                  aria-label={
+                                    day
+                                      ? `${day.count} contribution${day.count === 1 ? "" : "s"} on ${formatContributionDate(day.date)}`
+                                      : undefined
+                                  }
+                                >
+                                  <div
+                                    className="w-full h-full rounded-xs transition-transform duration-150 group-hover:scale-125"
+                                    style={{
+                                      background: levelColor(day?.level),
+                                    }}
+                                  />
+                                  {day && (
+                                    <div className="pointer-events-none absolute left-1/2 bottom-full z-20 mb-2 -translate-x-1/2 opacity-0 transition-opacity duration-150 group-hover:opacity-100">
+                                      <div
+                                        className="whitespace-nowrap rounded-md px-2.5 py-1.5 text-xs font-medium shadow-lg"
+                                        style={{
+                                          background: "var(--text)",
+                                          color: "var(--bg)",
+                                        }}
+                                      >
+                                        <strong>{day.count}</strong>{" "}
+                                        contribution
+                                        {day.count === 1 ? "" : "s"} on{" "}
+                                        {formatContributionDate(day.date)}
+                                      </div>
+                                      <div
+                                        className="absolute left-1/2 top-full -translate-x-1/2 border-4 border-transparent"
+                                        style={{
+                                          borderTopColor: "var(--text)",
+                                        }}
+                                      />
+                                    </div>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Legend */}
+                        <div
+                          className="flex items-center justify-end gap-1.5 mt-3 text-[10px]"
+                          style={{ color: "var(--text-faint)" }}
+                        >
+                          <span>Less</span>
+                          {[0, 1, 2, 3, 4].map((level) => (
+                            <div
+                              key={level}
+                              style={{
+                                width: CONTRIBUTION_CELL_SIZE,
+                                height: CONTRIBUTION_CELL_SIZE,
+                                borderRadius: 2,
+                                background: levelColor(level),
+                              }}
+                            />
+                          ))}
+                          <span>More</span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <span>{timeAgo(repo.updatedAt)}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+
+                  {/* Streak stats */}
+                  <div
+                    className="grid grid-cols-3 gap-2 mt-6 pt-6 border-t"
+                    style={{ borderColor: "var(--border)" }}
+                  >
+                    <ContributionStat
+                      value={`${total.toLocaleString()} Total`}
+                      range={streakRange(
+                        {
+                          start: days[0]?.date ?? null,
+                          end: days[days.length - 1]?.date ?? null,
+                        },
+                        "",
+                      )}
+                      caption="Year of Contributions"
+                    />
+                    <ContributionStat
+                      value={`${longest.length} ${longest.length === 1 ? "day" : "days"}`}
+                      range={streakRange(longest, "No streak yet")}
+                      caption="Longest Streak"
+                    />
+                    <ContributionStat
+                      value={`${current.length} ${current.length === 1 ? "day" : "days"}`}
+                      range={streakRange(current, "No active streak")}
+                      caption="Current Streak"
+                    />
+                  </div>
+                </>
+              )}
+            </div>
+          </TiltCard>
+        </div>
 
         {/* View all */}
         <div className="text-center mt-10">
@@ -181,7 +303,7 @@ export function Projects() {
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-300 hover:scale-105 glow-border"
-            style={{ color: 'var(--text)' }}
+            style={{ color: "var(--text)" }}
           >
             <GithubIcon size={16} />
             View All on GitHub
@@ -189,5 +311,5 @@ export function Projects() {
         </div>
       </div>
     </section>
-  )
+  );
 }
