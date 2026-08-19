@@ -12,44 +12,39 @@ const headers = {
 
 export async function GET() {
   try {
-    const [profileRes, reposRes] = await Promise.all([
+    const [profileRes, reposRes, contributionsRes] = await Promise.all([
       fetch(`${BASE}/users/${GITHUB_USER}`, { headers, next: { revalidate: 3600 } }),
       fetch(`${BASE}/users/${GITHUB_USER}/repos?per_page=100&sort=updated`, { headers, next: { revalidate: 3600 } }),
+      fetch(`https://github.com/users/${GITHUB_USER}/contributions`, {
+        headers: { 'User-Agent': 'Mozilla/5.0' },
+        next: { revalidate: 3600 },
+      }),
     ])
 
-    if (!profileRes.ok || !reposRes.ok) {
+    if (!profileRes.ok || !reposRes.ok || !contributionsRes.ok) {
       throw new Error('GitHub API error')
     }
 
     const profile = await profileRes.json()
     const repos = await reposRes.json()
+    const contributionsHtml = await contributionsRes.text()
+
+    // Contribution calendar (mirrors the heatmap on a GitHub profile page)
+    const dayCells = [...contributionsHtml.matchAll(/data-date="(\d{4}-\d{2}-\d{2})"[^>]*data-level="(\d)"/g)]
+    const tooltips = [...contributionsHtml.matchAll(/class="sr-only position-absolute">((?:No|\d+) contributions? on [^<]*)<\/tool-tip>/g)]
+    const days = dayCells
+      .map(([, date, level], i) => {
+        const tooltip = tooltips[i]?.[1] ?? ''
+        const countMatch = tooltip.match(/^(\d+)/)
+        return { date, level: Number(level), count: countMatch ? Number(countMatch[1]) : 0 }
+      })
+      .sort((a, b) => a.date.localeCompare(b.date))
+    const totalMatch = contributionsHtml.match(/<h2[^>]*>\s*([\d,]+)\s*\n?\s*contributions/)
+    const totalContributions = totalMatch ? Number(totalMatch[1].replace(/,/g, '')) : 0
 
     // Compute stats
     const totalStars = repos.reduce((acc: number, r: { stargazers_count: number }) => acc + (r.stargazers_count ?? 0), 0)
     const totalForks = repos.reduce((acc: number, r: { forks_count: number }) => acc + (r.forks_count ?? 0), 0)
-
-    // Top repos by latest update, excluding forks
-    const topRepos = [...repos]
-      .filter((r: { fork: boolean }) => !r.fork)
-      .sort((a: { updated_at: string }, b: { updated_at: string }) =>
-        new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
-      )
-      .slice(0, 6)
-      .map((r: {
-        id: number; name: string; description: string; html_url: string;
-        stargazers_count: number; forks_count: number; language: string;
-        updated_at: string; topics: string[];
-      }) => ({
-        id: r.id,
-        name: r.name,
-        description: r.description,
-        url: r.html_url,
-        stars: r.stargazers_count,
-        forks: r.forks_count,
-        language: r.language,
-        updatedAt: r.updated_at,
-        topics: r.topics ?? [],
-      }))
 
     // Language breakdown
     const langCount: Record<string, number> = {}
@@ -72,8 +67,8 @@ export async function GET() {
         following: profile.following,
       },
       stats: { totalStars, totalForks, publicRepos: profile.public_repos },
-      topRepos,
       topLanguages,
+      contributions: { total: totalContributions, days },
     })
   } catch (e) {
     console.error(e)
