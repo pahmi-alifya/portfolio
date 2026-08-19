@@ -4,6 +4,7 @@ export type Experience = {
   period: { start: string; end: string }
   location: string
   current?: boolean
+  freelance?: boolean
   jobs: string[]
   techStack: string[]
 }
@@ -63,6 +64,7 @@ export const experiences: Experience[] = [
     role: 'React Native Developer',
     period: { start: 'May 2022', end: 'Nov 2022' },
     location: 'Bali, Indonesia',
+    freelance: true,
     jobs: [
       'Contributed to KawanMabar App V2 development',
       'Implemented Firebase push notifications',
@@ -87,6 +89,7 @@ export const experiences: Experience[] = [
     role: 'Mobile Developer',
     period: { start: 'Jul 2021', end: 'Oct 2021' },
     location: 'Jakarta Raya, Indonesia',
+    freelance: true,
     jobs: [
       'Developed Simlinmas Android application from scratch',
       'API integration and bug fixing',
