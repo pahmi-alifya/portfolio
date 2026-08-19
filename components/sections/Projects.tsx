@@ -118,7 +118,7 @@ export function Projects() {
           }}
         >
           <TiltCard maxTilt={4} radius="12px">
-            <div className="card-surface p-6 w-max justify-self-center">
+            <div className="card-surface p-6 lg:w-max w-full justify-self-center">
               {isLoading ? (
                 <div
                   className="h-48"
@@ -141,7 +141,7 @@ export function Projects() {
                       {total.toLocaleString()} contributions in the last year
                     </p>
 
-                    <div className="inline-flex gap-2">
+                    <div className="flex gap-2 overflow-x-auto -mx-6 px-6 pb-1 lg:overflow-visible lg:mx-0 lg:px-0 lg:pb-0">
                       {/* Weekday labels */}
                       <div
                         className="flex flex-col shrink-0"
@@ -161,7 +161,7 @@ export function Projects() {
                         ))}
                       </div>
 
-                      <div>
+                      <div className="shrink-0">
                         {/* Month labels */}
                         <div
                           className="flex"
