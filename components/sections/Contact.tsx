@@ -19,7 +19,7 @@ const contactLinks = [
     icon: Phone,
     label: "WhatsApp",
     value: "+62 858-1397-3559",
-    href: "https://wa.me/628581397359",
+    href: "https://wa.me/6285813973559",
     color: "var(--accent)",
     glow: "var(--accent-glow)",
   },
@@ -108,59 +108,64 @@ export function Contact() {
             }}
           >
             <div className="space-y-4">
-              {contactLinks.map(({ icon: Icon, label, value, href, color, glow }) => {
-                const inner = (
-                  <>
-                    <div
-                      className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-all duration-300 group-hover:scale-110"
-                      style={{ background: glow, border: `1px solid ${color}` }}
-                    >
-                      <Icon size={20} style={{ color }} />
-                    </div>
-                    <div>
+              {contactLinks.map(
+                ({ icon: Icon, label, value, href, color, glow }) => {
+                  const inner = (
+                    <>
                       <div
-                        className="text-xs font-semibold uppercase tracking-wider mb-0.5"
-                        style={{ color: "var(--text-muted)" }}
+                        className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 transition-all duration-300 group-hover:scale-110"
+                        style={{
+                          background: glow,
+                          border: `1px solid ${color}`,
+                        }}
                       >
-                        {label}
+                        <Icon size={20} style={{ color }} />
                       </div>
-                      <div
-                        className="text-sm font-medium"
-                        style={{ color: "var(--text)" }}
-                      >
-                        {value}
+                      <div>
+                        <div
+                          className="text-xs font-semibold uppercase tracking-wider mb-0.5"
+                          style={{ color: "var(--text-muted)" }}
+                        >
+                          {label}
+                        </div>
+                        <div
+                          className="text-sm font-medium"
+                          style={{ color: "var(--text)" }}
+                        >
+                          {value}
+                        </div>
                       </div>
-                    </div>
-                  </>
-                );
+                    </>
+                  );
 
-                if (!href) {
+                  if (!href) {
+                    return (
+                      <TiltCard key={label} maxTilt={8} radius="12px">
+                        <div
+                          className="flex items-center gap-4 p-4 rounded-xl group glow-border"
+                          style={{ background: "var(--bg-card)" }}
+                        >
+                          {inner}
+                        </div>
+                      </TiltCard>
+                    );
+                  }
+
                   return (
                     <TiltCard key={label} maxTilt={8} radius="12px">
-                      <div
-                        className="flex items-center gap-4 p-4 rounded-xl group glow-border"
+                      <a
+                        href={href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-4 p-4 rounded-xl transition-all duration-300 group glow-border"
                         style={{ background: "var(--bg-card)" }}
                       >
                         {inner}
-                      </div>
+                      </a>
                     </TiltCard>
                   );
-                }
-
-                return (
-                  <TiltCard key={label} maxTilt={8} radius="12px">
-                    <a
-                      href={href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-4 p-4 rounded-xl transition-all duration-300 group glow-border"
-                      style={{ background: "var(--bg-card)" }}
-                    >
-                      {inner}
-                    </a>
-                  </TiltCard>
-                );
-              })}
+                },
+              )}
             </div>
           </div>
 
