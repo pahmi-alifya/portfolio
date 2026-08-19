@@ -36,7 +36,7 @@
   --purple-glow: rgba(168, 85, 247, 0.35);
   --text: #e2e8f0;
   --text-muted: #94a3b8;
-  --text-faint: #475569;
+  --text-faint: #64748b;
 }
 
 /* ─── Base ──────────────────────────────────────── */
@@ -58,6 +58,7 @@ body {
 /* ─── Scrollbar ─────────────────────────────────── */
 ::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
   background: var(--bg-surface);
