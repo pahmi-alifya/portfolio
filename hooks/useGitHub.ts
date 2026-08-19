@@ -15,18 +15,11 @@ type GitHubData = {
     totalForks: number
     publicRepos: number
   }
-  topRepos: Array<{
-    id: number
-    name: string
-    description: string
-    url: string
-    stars: number
-    forks: number
-    language: string
-    updatedAt: string
-    topics: string[]
-  }>
   topLanguages: Array<{ name: string; count: number }>
+  contributions: {
+    total: number
+    days: Array<{ date: string; level: number; count: number }>
+  }
 }
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json())
