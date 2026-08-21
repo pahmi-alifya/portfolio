@@ -35,4 +35,10 @@ export const works: WorkProject[] = [
       'All-in-one Islamic companion app offering prayer time schedules, Quran reading, Qibla direction finder, daily supplications, and Zakat calculation and guidance to support daily religious practice.',
     url: 'https://sahabat-ibadah.vercel.app/',
   },
+  {
+    title: 'Karon',
+    description:
+      'Online cashier (kasir) and point-of-sale system for small businesses, streamlining product management, transaction processing, and sales tracking through a simple web-based interface.',
+    url: 'https://karon-pos.vercel.app/',
+  },
 ]
