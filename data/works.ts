@@ -39,6 +39,6 @@ export const works: WorkProject[] = [
     title: 'Karon',
     description:
       'Online cashier (kasir) and point-of-sale system for small businesses, streamlining product management, transaction processing, and sales tracking through a simple web-based interface.',
-    url: 'https://karon-pos.vercel.app/',
+    url: 'https://karon-pos.vercel.app/login',
   },
 ]
