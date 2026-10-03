@@ -6,10 +6,22 @@ export interface WorkProject {
 
 export const works: WorkProject[] = [
   {
+    title: 'Padelduls',
+    description:
+      'Community platform for padel players of all levels to find opponents, climb the rankings, and celebrate every win together with the community.',
+    url: 'https://padelduls.vercel.app/',
+  },
+  {
     title: 'Hematin',
     description:
       'AI-powered daily financial tracking app that helps users record and monitor everyday income and expenses, combining simple bookkeeping with AI-assisted insights for personal budgeting.',
     url: 'https://hematin.vercel.app/',
+  },
+  {
+    title: 'Sahabat Ibadah',
+    description:
+      'All-in-one Islamic companion app offering prayer time schedules, Quran reading, Qibla direction finder, daily supplications, and Zakat calculation and guidance to support daily religious practice.',
+    url: 'https://sahabat-ibadah.vercel.app/',
   },
   {
     title: 'Media Menulis',
@@ -24,21 +36,17 @@ export const works: WorkProject[] = [
     url: 'https://my-salary-exchange.vercel.app/',
   },
   {
-    title: 'Rami Games',
-    description:
-      'Camera-based interactive gaming platform that turns webcam-captured body movement and gestures into gameplay input, replacing traditional keyboard or controller controls.',
-    url: 'https://rami-games.vercel.app/',
-  },
-  {
-    title: 'Sahabat Ibadah',
-    description:
-      'All-in-one Islamic companion app offering prayer time schedules, Quran reading, Qibla direction finder, daily supplications, and Zakat calculation and guidance to support daily religious practice.',
-    url: 'https://sahabat-ibadah.vercel.app/',
-  },
-  {
     title: 'Karon',
     description:
       'Online cashier (kasir) and point-of-sale system for small businesses, streamlining product management, transaction processing, and sales tracking through a simple web-based interface.',
     url: 'https://karon-pos.vercel.app/login',
   },
+  {
+    title: 'Rami Games',
+    description:
+      'Camera-based interactive gaming platform that turns webcam-captured body movement and gestures into gameplay input, replacing traditional keyboard or controller controls.',
+    url: 'https://rami-games.vercel.app/',
+  },
+
+
 ]
