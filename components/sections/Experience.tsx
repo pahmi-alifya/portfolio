@@ -134,6 +134,11 @@ function ExperienceCard({
                 className="px-5 pb-5 border-t"
                 style={{ borderColor: 'var(--border)' }}
               >
+                {exp.summary && (
+                  <p className="mt-4 text-sm leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+                    {exp.summary}
+                  </p>
+                )}
                 <ul className="mt-4 space-y-2">
                   {exp.jobs.map((job) => (
                     <li
