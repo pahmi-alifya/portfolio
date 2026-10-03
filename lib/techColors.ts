@@ -28,6 +28,9 @@ export const techColors: Record<string, TechColor> = {
   'CI/CD': { bg: 'rgba(99,102,241,0.1)', text: '#818CF8', border: 'rgba(99,102,241,0.4)', glow: 'rgba(99,102,241,0.25)' },
   'Module Federation': { bg: 'rgba(168,85,247,0.1)', text: '#C084FC', border: 'rgba(168,85,247,0.4)', glow: 'rgba(168,85,247,0.25)' },
   'SSO': { bg: 'rgba(34,211,238,0.1)', text: '#22D3EE', border: 'rgba(34,211,238,0.4)', glow: 'rgba(34,211,238,0.25)' },
+  'Vitest': { bg: 'rgba(114,158,27,0.1)', text: '#A3E635', border: 'rgba(114,158,27,0.4)', glow: 'rgba(114,158,27,0.25)' },
+  'AWS Cognito': { bg: 'rgba(255,153,0,0.1)', text: '#FB923C', border: 'rgba(255,153,0,0.4)', glow: 'rgba(255,153,0,0.25)' },
+  'Azure AD': { bg: 'rgba(0,120,212,0.1)', text: '#38BDF8', border: 'rgba(0,120,212,0.4)', glow: 'rgba(0,120,212,0.25)' },
 }
 
 export function getTechColor(tech: string): TechColor {

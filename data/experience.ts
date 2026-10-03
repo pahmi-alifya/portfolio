@@ -17,10 +17,15 @@ export const experiences: Experience[] = [
     location: 'Indonesia',
     current: true,
     jobs: [
-      'Frontend development for production-grade applications',
-      'Collaborating with cross-functional teams',
+      'Designed and built scalable web and mobile applications using React, TypeScript, and React Native',
+      'Implemented role-based access control (RBAC)',
+      'Managed state with Zustand and data caching with TanStack Query',
+      'Created an internal reusable SSO authentication library (AWS Cognito / Azure AD)',
+      'Integrated analytics and data export features',
+      'Maintained high code quality with Vitest unit tests',
+      'Collaborated with cross-functional teams on feature delivery and technical documentation',
     ],
-    techStack: ['React Js', 'React Native', 'Zustand', 'GraphQl', 'TanStack Query', 'Refine'],
+    techStack: ['React Js', 'TypeScript', 'Refine', 'React Native', 'Zustand', 'TanStack Query', 'Vitest', 'AWS Cognito', 'Azure AD', 'I18n'],
   },
   {
     company: 'eFishery',
@@ -40,7 +45,7 @@ export const experiences: Experience[] = [
       'Coverage unit test & code reviews',
       'API and GraphQL integration',
     ],
-    techStack: ['React Js', 'React Native', 'Zustand', 'GraphQl', 'TanStack Query', 'Refine'],
+    techStack: ['React Js', 'React Native', 'Zustand', 'GraphQl', 'TanStack Query', 'Refine', 'Vitest', 'I18n', 'CI/CD',],
   },
   {
     company: 'RCTI+',
@@ -57,7 +62,7 @@ export const experiences: Experience[] = [
       'Improved CI/CD pipeline for international deployment',
       'Code reviews and API/GraphQL integration',
     ],
-    techStack: ['Next Js', 'Vue Js', 'Redux', 'Zustand', 'GraphQl', 'Firebase'],
+    techStack: ['Next Js', 'Vue Js', 'Redux', 'Zustand', 'GraphQl', 'Firebase', 'Module Federation'],
   },
   {
     company: 'KawanMabar',
